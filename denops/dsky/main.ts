@@ -40,15 +40,23 @@ export async function main(ds: Denops): Promise<void> {
       unknownutil.ensureNumber(winwidth);
       const separator = "".padEnd(winwidth, "-");
 
+      await helper.execute(
+        ds,
+        `
+        setlocal modifiable
+        silent %delete _
+        `
+      );
+
       let row = 1;
-      posts.forEach(async (post) => {
+      for (const post of posts) {
         const lines = await post.format(ds);
         lines.push(separator);
-        ds.call("setline", row, lines);
+        await ds.call("setline", row, lines);
         row += lines.length;
-      });
+      }
 
-      helper.execute(
+      await helper.execute(
         ds,
         `
         setfiletype dsky
@@ -56,12 +64,12 @@ export async function main(ds: Denops): Promise<void> {
         setlocal bufhidden=wipe
         setlocal nobuflisted
         setlocal noswapfile
-        setlocal modifiable
+        setlocal nomodifiable
         setlocal nonumber
+        setlocal nomodified
         `
       );
 
-      helper.execute(ds, "setlocal nomodified");
       return Promise.resolve();
     },
   };
