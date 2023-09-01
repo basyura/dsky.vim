@@ -1,9 +1,11 @@
-import { Denops, unknownutil, helper, fn, vars } from "./deps.ts";
+import { Denops, unknownutil, helper, fn } from "./deps.ts";
 import { createRecord } from "./repo.ts";
 import { createSession } from "./server.ts";
 import { getTimeline } from "./feed.ts";
 
 export async function main(ds: Denops): Promise<void> {
+  await initialize(ds);
+
   ds.dispatcher = {
     // com.atproto.repo.createRecord
     async createRecord(text: unknown): Promise<void> {
@@ -73,4 +75,16 @@ export async function main(ds: Denops): Promise<void> {
       return Promise.resolve();
     },
   };
+}
+
+async function initialize(ds: Denops): Promise<void> {
+  // make config dir
+  const config_dir = await fn.expand(ds, "~/.config/dsky");
+  unknownutil.ensureString(config_dir);
+  try {
+    await Deno.stat(config_dir);
+  } catch {
+    console.log("mkdir", config_dir);
+    await fn.mkdir(ds, config_dir, "p");
+  }
 }
