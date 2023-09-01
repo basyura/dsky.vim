@@ -21,6 +21,7 @@ endfunction
 function! s:define_default_key_mappings()
   augroup dsky_say
     nnoremap <buffer> <silent> q :bd!<CR>
+    nnoremap <buffer> <silent> <C-j> :bd!<CR>
     nmap <buffer> <silent> <CR>   <Plug>(dsky_say_post_buffer)
     imap <buffer> <silent> <C-CR> <ESC><Plug>(dsky_say_post_buffer)
   augroup END

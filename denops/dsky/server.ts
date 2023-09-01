@@ -4,9 +4,9 @@ import { Session } from "./types.ts";
 
 const sessionUrl = "https://bsky.social/xrpc/com.atproto.server.createSession";
 
-export const createSession = async (denops: Denops): Promise<Session> => {
-  const id = (await vars.globals.get(denops, "dsky_id")) as string;
-  const pass = (await vars.globals.get(denops, "dsky_password")) as string;
+export const createSession = async (ds: Denops): Promise<Session> => {
+  const id = (await vars.globals.get(ds, "dsky_id")) as string;
+  const pass = (await vars.globals.get(ds, "dsky_password")) as string;
 
   const res = await fetch(sessionUrl, {
     method: "POST",

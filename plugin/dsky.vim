@@ -1,7 +1,7 @@
-if exists('g:loaded_tweetvim')
+if exists('g:loaded_dsky')
   finish
 endif
-let g:loaded_tweetvim = 1
+let g:loaded_dsky = 1
 
 
 command! DSkySay :call dsky#say#open()
