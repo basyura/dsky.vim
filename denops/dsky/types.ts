@@ -13,6 +13,10 @@ export class Post {
     const author_len = 16;
     const lines = this.text.split("\n");
     let name = this.author;
+    if (name == null) {
+      name = "";
+    }
+    console.log("[", name, "]");
     let len = await fn.strwidth(ds, name);
     unknownutil.ensureNumber(len);
     // todo
