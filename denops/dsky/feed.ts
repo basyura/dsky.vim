@@ -60,6 +60,7 @@ async function postProcess(ds: Denops): Promise<void> {
     setlocal signcolumn=no
 
     nmap <silent> <buffer> <Leader><Leader>  <Plug>(dsky_reload)
+    nmap <silent> <buffer> o  <Plug>(dsky_open_links)
 
     call cursor(1, ${consts.AUTHOR_LEN + 1})
     `

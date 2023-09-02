@@ -9,6 +9,16 @@ function! dsky#timeline()
   call denops#request("dsky", "getTimeline", [])
 endfunction
 
+function! dsky#open_links()
+  let line = getline(".")
+  let matched = matchlist(line, 'https\?://[0-9A-Za-z_#?~=\-+%\.\/:]\+')
+  if len(matched) == 0
+    return
+  endif
+  execute "OpenBrowser " . matched[0]
+
+endfunction
+
 function! s:switch_buffer()
   " get buf no from buffer's name
   let bufnr = -1
