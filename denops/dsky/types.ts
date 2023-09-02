@@ -4,10 +4,18 @@ import * as consts from "./consts.ts";
 export class Post {
   author: string;
   text: string;
+  feature: string;
   //
   constructor(post: any) {
     this.author = post.author.displayName;
     this.text = post.record.text;
+    this.feature = "";
+
+    const facets = post.record.facets;
+    if (facets != null && facets[0].features != null) {
+      console.log(facets);
+      this.feature = facets[0].features[0].uri;
+    }
   }
   //
   async format(ds: Denops): Promise<Array<string>> {
@@ -16,6 +24,7 @@ export class Post {
     if (name == null) {
       name = "*****";
     }
+
     let len = await fn.strwidth(ds, name);
     unknownutil.ensureNumber(len);
     // todo

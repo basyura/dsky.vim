@@ -6,7 +6,7 @@ let s:buf_name = "dsky"
 
 function! dsky#timeline()
   call s:switch_buffer()
-  call denops#request("dsky", "showTimeline", [])
+  call denops#request("dsky", "getTimeline", [])
 endfunction
 
 function! s:switch_buffer()

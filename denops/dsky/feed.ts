@@ -3,10 +3,8 @@ import { Post } from "./types.ts";
 import * as proxy from "./proxy.ts";
 import * as consts from "./consts.ts";
 
-const URL_GET_TIME_LINE = "https://bsky.social/xrpc/app.bsky.feed.getTimeline";
-
-export const showTimeline = async (ds: Denops): Promise<void> => {
-  const posts = await getTimeline(ds);
+export async function getTimeline(ds: Denops): Promise<void> {
+  const posts = await _getTimeline(ds);
   const separator = await createSeparator(ds);
 
   await preProcess(ds);
@@ -14,11 +12,11 @@ export const showTimeline = async (ds: Denops): Promise<void> => {
   await postProcess(ds);
 
   return Promise.resolve();
-};
+}
 
-const getTimeline = async (ds: Denops): Promise<Array<Post>> => {
+async function _getTimeline(ds: Denops): Promise<Array<Post>> {
   const start = performance.now();
-  const res = await proxy.get(ds, URL_GET_TIME_LINE);
+  const res = await proxy.get(ds, consts.URL_GET_TIME_LINE);
 
   const json = await res.json();
   dump(ds, json);
@@ -35,9 +33,9 @@ const getTimeline = async (ds: Denops): Promise<Array<Post>> => {
   helper.echo(ds, `getTimeline ... ${Math.floor(end - start)}ms`);
 
   return posts;
-};
+}
 
-const preProcess = async (ds: Denops): Promise<void> => {
+async function preProcess(ds: Denops): Promise<void> {
   await helper.execute(
     ds,
     `
@@ -45,9 +43,9 @@ const preProcess = async (ds: Denops): Promise<void> => {
     silent %delete _
     `
   );
-};
+}
 
-const postProcess = async (ds: Denops): Promise<void> => {
+async function postProcess(ds: Denops): Promise<void> {
   await helper.execute(
     ds,
     `
@@ -66,13 +64,13 @@ const postProcess = async (ds: Denops): Promise<void> => {
     call cursor(1, ${consts.AUTHOR_LEN + 1})
     `
   );
-};
+}
 
-const writeTimeline = async (
+async function writeTimeline(
   ds: Denops,
   posts: Array<Post>,
   separator: string
-): Promise<void> => {
+): Promise<void> {
   let row = 1;
   for (const post of posts) {
     const lines = await post.format(ds);
@@ -80,9 +78,9 @@ const writeTimeline = async (
     await ds.call("setline", row, lines);
     row += lines.length;
   }
-};
+}
 
-const getWinWidth = async (ds: Denops): Promise<number> => {
+async function getWinWidth(ds: Denops): Promise<number> {
   let winwidth = await fn.winwidth(ds, 0);
   unknownutil.ensureNumber(winwidth);
   // todo: number,signcolumn
@@ -90,16 +88,16 @@ const getWinWidth = async (ds: Denops): Promise<number> => {
   unknownutil.ensureNumber(winwidth);
 
   return winwidth;
-};
+}
 
-const createSeparator = async (ds: Denops): Promise<string> => {
+async function createSeparator(ds: Denops): Promise<string> {
   const winwidth = await getWinWidth(ds);
   const separator = "".padEnd(winwidth, "-");
   return separator;
-};
+}
 
-const dump = async (ds: Denops, json: any) => {
+async function dump(ds: Denops, json: any) {
   const debug_path = await fn.expand(ds, "~/Desktop/debug.json");
   unknownutil.ensureString(debug_path);
   Deno.writeTextFile(debug_path, JSON.stringify(json));
-};
+}
