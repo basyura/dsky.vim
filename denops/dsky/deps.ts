@@ -9,3 +9,4 @@ export * as mapping from "https://deno.land/x/denops_std@v2.0.0/mapping/mod.ts";
 export * as option from "https://deno.land/x/denops_std@v2.0.0/option/mod.ts";
 export * as vars from "https://deno.land/x/denops_std@v2.0.0/variable/mod.ts";
 export * as unknownutil from "https://deno.land/x/unknownutil@v1.1.2/mod.ts";
+export * as ptera from "https://deno.land/x/ptera@v1.0.2/mod.ts";

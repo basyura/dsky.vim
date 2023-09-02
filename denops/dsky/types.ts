@@ -1,14 +1,17 @@
-import { Denops, unknownutil, fn } from "./deps.ts";
+import { Denops, unknownutil, fn, ptera } from "./deps.ts";
 import * as consts from "./consts.ts";
 
 export class Post {
   author: string;
   text: string;
+  createdAt: ptera.DateTime;
   feature: string;
   //
   constructor(post: any) {
     this.author = post.author.displayName;
     this.text = post.record.text;
+    this.createdAt = ptera.datetime(post.record.createdAt);
+    this.createdAt = this.createdAt.add({ hour: this.createdAt.offsetHour() });
     this.feature = "";
 
     const facets = post.record.facets;
@@ -19,6 +22,7 @@ export class Post {
   //
   async format(ds: Denops): Promise<Array<string>> {
     const lines = this.text.split("\n");
+    lines[lines.length - 1] += ` - ${this.createdAt.format("MM/dd HH:mm")}`;
     let name = this.author;
     if (name == null) {
       name = "*****";
