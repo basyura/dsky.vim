@@ -13,7 +13,6 @@ export class Post {
 
     const facets = post.record.facets;
     if (facets != null && facets[0].features != null) {
-      console.log(facets);
       this.feature = facets[0].features[0].uri;
     }
   }
@@ -40,7 +39,12 @@ export class Post {
     const ret = new Array<string>();
     ret.push(`${name}${pad}${lines[0]}`);
     for (let i = 1; i < lines.length; i++) {
-      ret.push("".padStart(consts.AUTHOR_LEN / 2, "　") + lines[i]);
+      let line = lines[i];
+      // カーソルが左右に移動しないように
+      if (line == "") {
+        line = " ";
+      }
+      ret.push("".padStart(consts.AUTHOR_LEN / 2, "　") + line);
     }
 
     return ret;
