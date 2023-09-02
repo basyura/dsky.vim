@@ -1,6 +1,7 @@
 import { Denops, unknownutil, helper, fn } from "./deps.ts";
 import { Post } from "./types.ts";
 import * as proxy from "./proxy.ts";
+import * as consts from "./consts.ts";
 
 const URL_GET_TIME_LINE = "https://bsky.social/xrpc/app.bsky.feed.getTimeline";
 
@@ -40,9 +41,9 @@ const preProcess = async (ds: Denops): Promise<void> => {
   await helper.execute(
     ds,
     `
-        setlocal modifiable
-        silent %delete _
-        `
+    setlocal modifiable
+    silent %delete _
+    `
   );
 };
 
@@ -50,15 +51,20 @@ const postProcess = async (ds: Denops): Promise<void> => {
   await helper.execute(
     ds,
     `
-        setfiletype dsky
-        setlocal breakindentopt=shift:16
-        setlocal bufhidden=wipe
-        setlocal nobuflisted
-        setlocal noswapfile
-        setlocal nomodifiable
-        setlocal nonumber
-        setlocal nomodified
-        `
+    setfiletype dsky
+    setlocal breakindentopt=shift:${consts.AUTHOR_LEN}
+    setlocal bufhidden=wipe
+    setlocal nobuflisted
+    setlocal noswapfile
+    setlocal nomodifiable
+    setlocal nonumber
+    setlocal nomodified
+    setlocal signcolumn=no
+
+    nmap <silent> <buffer> <Leader><Leader>  <Plug>(dsky_reload)
+
+    call cursor(1, ${consts.AUTHOR_LEN + 1})
+    `
   );
 };
 

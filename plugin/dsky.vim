@@ -9,3 +9,4 @@ command! DSkyTimeline :call dsky#timeline()
 
 
 nnoremap <silent> <Plug>(dsky_say_post_buffer)  :<C-u>call dsky#say#post_buffer()<CR>
+nnoremap <silent> <Plug>(dsky_reload)           :<C-u>call dsky#timeline()<CR>
