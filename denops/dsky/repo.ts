@@ -1,9 +1,9 @@
 // https://atproto.com/lexicons/com-atproto-repo
 import { Denops, unknownutil, helper } from "./deps.ts";
-import { createSession } from "./server.ts";
-import { Session } from "./types.ts";
+import * as proxy from "./proxy.ts";
 
-const postUrl = "https://bsky.social/xrpc/com.atproto.repo.createRecord";
+const URL_CREATE_RECORD =
+  "https://bsky.social/xrpc/com.atproto.repo.createRecord";
 
 // https://atproto.com/lexicons/com-atproto-repo#comatprotorepocreaterecord
 export const createRecord = async (
@@ -15,8 +15,7 @@ export const createRecord = async (
     return;
   }
 
-  const session = await createSession(ds);
-  const json = await post(session, text);
+  const json = await post(ds, text);
 
   if (json.error != null) {
     helper.echo(ds, json);
@@ -26,25 +25,17 @@ export const createRecord = async (
   }
 };
 
-const post = async (session: Session, text: string) => {
-  const url = postUrl;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session.accessJwt}`,
-    },
-    body: `{
-      "repo": "${session.did}",
+const post = async (ds: Denops, text: string) => {
+  const body = `{
+      "repo": "$SESSION_DID",
       "collection": "app.bsky.feed.post",
       "record": {
         "text": "${text}", 
         "createdAt" : "${new Date().toISOString()}",
         "langs" : ["ja"]
       }
-    }`,
-  });
-
+    }`;
+  const res = await proxy.post(ds, URL_CREATE_RECORD, body);
   const json = await res.json();
   return json;
 };

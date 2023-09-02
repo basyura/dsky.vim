@@ -46,6 +46,14 @@ export class Session {
   accessJwt: string;
   refreshJwt: string;
   constructor(session: any) {
+    if (session.length == 0) {
+      this.did = "";
+      this.handle = "";
+      this.email = "";
+      this.accessJwt = "";
+      this.refreshJwt = "";
+      return;
+    }
     this.did = session.did;
     this.handle = session.handle;
     this.email = session.email;

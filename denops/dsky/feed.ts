@@ -1,8 +1,8 @@
 import { Denops, unknownutil, helper, fn } from "./deps.ts";
-import { createSession } from "./server.ts";
 import { Post } from "./types.ts";
+import * as proxy from "./proxy.ts";
 
-const getTimelineUrl = "https://bsky.social/xrpc/app.bsky.feed.getTimeline";
+const URL_GET_TIME_LINE = "https://bsky.social/xrpc/app.bsky.feed.getTimeline";
 
 export const showTimeline = async (ds: Denops): Promise<void> => {
   const posts = await getTimeline(ds);
@@ -16,29 +16,11 @@ export const showTimeline = async (ds: Denops): Promise<void> => {
 };
 
 const getTimeline = async (ds: Denops): Promise<Array<Post>> => {
-  const session = await createSession(ds);
-
   const start = performance.now();
-  // const url = getTimelineUrl + `?actor=${session.handle}`;
-  const url = getTimelineUrl;
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session.accessJwt}`,
-    },
-  });
+  const res = await proxy.get(ds, URL_GET_TIME_LINE);
 
   const json = await res.json();
-  // const author = json.feed[0].post.author.displayName;
-  // const text = json.feed[0].post.record.text;
-  // console.log(res);
-  // const json = await res.json();
-  //
-  Deno.writeTextFile(
-    "C:/Users/tatsuya/Desktop/debug.json",
-    JSON.stringify(json)
-  );
+  dump(ds, json);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
@@ -108,4 +90,10 @@ const createSeparator = async (ds: Denops): Promise<string> => {
   const winwidth = await getWinWidth(ds);
   const separator = "".padEnd(winwidth, "-");
   return separator;
+};
+
+const dump = async (ds: Denops, json: any) => {
+  const debug_path = await fn.expand(ds, "~/Desktop/debug.json");
+  unknownutil.ensureString(debug_path);
+  Deno.writeTextFile(debug_path, JSON.stringify(json));
 };
