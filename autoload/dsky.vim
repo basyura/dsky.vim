@@ -9,6 +9,12 @@ function! dsky#timeline()
   call denops#request("dsky", "getTimeline", [])
 endfunction
 
+
+function! dsky#notifications()
+  call s:switch_buffer()
+  call denops#request("dsky", "listNotifications", [])
+endfunction
+
 function! dsky#open_links()
   let line = getline(".")
   let matched = matchlist(line, 'https\?://[0-9A-Za-z_#?~=\-+%\.\/:]\+')

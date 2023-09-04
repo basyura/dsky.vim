@@ -1,6 +1,7 @@
 import { Denops, fn } from "./deps.ts";
 import * as repo from "./repo.ts";
 import * as feed from "./feed.ts";
+import * as notification from "./notification.ts";
 import * as path from "./path.ts";
 
 export async function main(ds: Denops): Promise<void> {
@@ -14,6 +15,10 @@ export async function main(ds: Denops): Promise<void> {
     // app.bsky.feed.getTimeline
     async getTimeline(): Promise<unknown> {
       return await feed.getTimeline(ds);
+    },
+    // app.bsky.notification.listNotifications
+    async listNotifications(): Promise<unknown> {
+      return await notification.listNotifications(ds);
     },
   };
 }
