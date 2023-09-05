@@ -1,4 +1,4 @@
-import { Denops, fn, unknownutil } from "./deps.ts";
+import { Denops, fn, unknownutil } from "./../deps.ts";
 
 export async function isExists(path: string): Promise<boolean> {
   try {

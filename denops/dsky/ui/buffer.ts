@@ -1,38 +1,15 @@
-import { Denops, unknownutil, helper, fn } from "./deps.ts";
-import { Post } from "./types.ts";
-import * as proxy from "./proxy.ts";
-import * as consts from "./consts.ts";
+import { Denops, unknownutil, helper, fn } from "./../deps.ts";
+import { Post } from "./../models/types.ts";
+import * as consts from "./../consts.ts";
+import * as feed from "./../api/feed.ts";
 
-export async function getTimeline(ds: Denops): Promise<void> {
-  const posts = await _getTimeline(ds);
+export async function loadTimeline(ds: Denops): Promise<void> {
+  const posts = await feed.getTimeline(ds);
   const separator = await createSeparator(ds);
 
   await preProcess(ds);
   await writeTimeline(ds, posts, separator);
   await postProcess(ds);
-
-  return Promise.resolve();
-}
-
-async function _getTimeline(ds: Denops): Promise<Array<Post>> {
-  const start = performance.now();
-  const res = await proxy.get(ds, consts.URL_GET_TIME_LINE);
-
-  const json = await res.json();
-  dump(ds, json);
-
-  const posts: Array<Post> = [];
-  const len = json.feed.length;
-  for (let i = 0; i < len; i++) {
-    posts.push(new Post(json.feed[i].post));
-  }
-
-  // console.log(posts.length);
-
-  const end = performance.now();
-  helper.echo(ds, `getTimeline ... ${Math.floor(end - start)}ms`);
-
-  return posts;
 }
 
 async function preProcess(ds: Denops): Promise<void> {
@@ -95,10 +72,4 @@ async function createSeparator(ds: Denops): Promise<string> {
   const winwidth = await getWinWidth(ds);
   const separator = "".padEnd(winwidth, "-");
   return separator;
-}
-
-async function dump(ds: Denops, json: any) {
-  const debug_path = await fn.expand(ds, "~/Desktop/debug.json");
-  unknownutil.ensureString(debug_path);
-  Deno.writeTextFile(debug_path, JSON.stringify(json));
 }

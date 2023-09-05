@@ -1,5 +1,5 @@
 // https://atproto.com/lexicons/com-atproto-repo
-import { Denops, unknownutil, helper } from "./deps.ts";
+import { Denops, unknownutil, helper } from "./../deps.ts";
 import * as proxy from "./proxy.ts";
 
 const URL_CREATE_RECORD =

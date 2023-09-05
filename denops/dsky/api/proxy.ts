@@ -1,5 +1,5 @@
-import { Denops, helper } from "./deps.ts";
-import { Session } from "./types.ts";
+import { Denops, helper } from "./../deps.ts";
+import { Session } from "./../models/types.ts";
 import * as server from "./server.ts";
 /*
  *

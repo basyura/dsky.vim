@@ -1,6 +1,6 @@
-import { Denops, unknownutil, helper, fn } from "./deps.ts";
+import { Denops, unknownutil, fn } from "./../deps.ts";
 import * as proxy from "./proxy.ts";
-import * as consts from "./consts.ts";
+import * as consts from "./../consts.ts";
 
 export async function listNotifications(ds: Denops): Promise<void> {
   const res = await proxy.get(ds, consts.URL_LIST_NOTIFICATIONS);

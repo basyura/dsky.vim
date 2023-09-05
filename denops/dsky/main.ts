@@ -1,8 +1,8 @@
 import { Denops, fn } from "./deps.ts";
-import * as repo from "./repo.ts";
-import * as feed from "./feed.ts";
-import * as notification from "./notification.ts";
-import * as path from "./path.ts";
+import * as repo from "./api/repo.ts";
+import * as notification from "./api/notification.ts";
+import * as path from "./api/path.ts";
+import * as buffer from "./ui/buffer.ts";
 
 export async function main(ds: Denops): Promise<void> {
   await initialize(ds);
@@ -14,7 +14,7 @@ export async function main(ds: Denops): Promise<void> {
     },
     // app.bsky.feed.getTimeline
     async getTimeline(): Promise<unknown> {
-      return await feed.getTimeline(ds);
+      return await buffer.loadTimeline(ds);
     },
     // app.bsky.notification.listNotifications
     async listNotifications(): Promise<unknown> {
