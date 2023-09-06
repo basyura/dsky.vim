@@ -29,7 +29,6 @@ async function postProcess(ds: Denops): Promise<void> {
     setfiletype dsky
     setlocal breakindentopt=shift:${consts.AUTHOR_LEN}
     setlocal bufhidden=wipe
-    setlocal nobuflisted
     setlocal noswapfile
     setlocal nomodifiable
     setlocal nonumber

@@ -4,7 +4,7 @@ function! dsky#say#open()
   if bufnr > 0
     exec bufnr.'wincmd w'
   else
-    execute 'botright split dsky_say'
+    execute 'belowright split dsky_say'
     execute '2 wincmd _'
     call s:define_default_key_mappings()
     call s:dsky_say_settings()
@@ -21,6 +21,7 @@ endfunction
 function! s:define_default_key_mappings()
   augroup dsky_say
     nnoremap <buffer> <silent> q :bd!<CR>
+    nnoremap <buffer> <silent> <Esc> :bd!<CR>
     nnoremap <buffer> <silent> <C-j> :bd!<CR>
     nmap <buffer> <silent> <CR>   <Plug>(dsky_say_post_buffer)
     imap <buffer> <silent> <C-CR> <ESC><Plug>(dsky_say_post_buffer)
