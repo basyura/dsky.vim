@@ -1,6 +1,6 @@
 // https://atproto.com/lexicons/com-atproto-server
 import { Denops, vars } from "./../deps.ts";
-import { Session } from "./../models/types.ts";
+import { Session } from "./../types.ts";
 import * as path from "./path.ts";
 
 const sessionUrl = "https://bsky.social/xrpc/com.atproto.server.createSession";

@@ -1,5 +1,5 @@
 import { Denops, unknownutil, helper, fn } from "./../deps.ts";
-import { Post } from "./../models/types.ts";
+import { Post } from "./../types.ts";
 import * as proxy from "./proxy.ts";
 import * as consts from "./../consts.ts";
 

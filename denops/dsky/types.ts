@@ -1,5 +1,5 @@
-import { Denops, unknownutil, fn, ptera } from "./../deps.ts";
-import * as consts from "./../consts.ts";
+import { Denops, unknownutil, fn, ptera } from "./deps.ts";
+import * as consts from "./consts.ts";
 
 export class Post {
   author: string;
