@@ -5,7 +5,7 @@ import * as consts from "./../consts.ts";
 
 export async function getTimeline(ds: Denops): Promise<Array<Post>> {
   const start = performance.now();
-  const res = await proxy.get(ds, consts.URL_GET_TIME_LINE);
+  const res = await proxy.get(ds, consts.URL_GET_TIME_LINE + "?limit=100");
 
   const json = await res.json();
   dump(ds, json);
@@ -13,7 +13,9 @@ export async function getTimeline(ds: Denops): Promise<Array<Post>> {
   const posts: Array<Post> = [];
   const len = json.feed.length;
   for (let i = 0; i < len; i++) {
-    posts.push(new Post(json.feed[i].post));
+    if (canView(json.feed[i])) {
+      posts.push(new Post(json.feed[i].post));
+    }
   }
 
   const end = performance.now();
@@ -26,4 +28,12 @@ async function dump(ds: Denops, json: any) {
   const debug_path = await fn.expand(ds, "~/Desktop/debug.json");
   unknownutil.ensureString(debug_path);
   Deno.writeTextFile(debug_path, JSON.stringify(json));
+}
+
+function canView(feed: any): boolean {
+  if (feed.reply == null) {
+    return true;
+  }
+
+  return feed.reply.root.author.did == feed.post.author.did;
 }
