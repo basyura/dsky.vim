@@ -40,7 +40,7 @@ export async function post(
   url: string,
   data: string
 ): Promise<Response> {
-  const session = await server.getSession(ds);
+  const session = await server.newSession(ds);
   data = data.replace("$SESSION_DID", session.did);
 
   const res = await fetch(url, {
