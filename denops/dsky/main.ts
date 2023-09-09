@@ -3,6 +3,7 @@ import * as repo from "./api/repo.ts";
 import * as notification from "./api/notification.ts";
 import * as path from "./api/path.ts";
 import * as buffer from "./ui/buffer.ts";
+import * as feed from "./api/feed.ts";
 
 export async function main(ds: Denops): Promise<void> {
   await initialize(ds);
@@ -14,11 +15,13 @@ export async function main(ds: Denops): Promise<void> {
     },
     // app.bsky.feed.getTimeline
     async getTimeline(): Promise<unknown> {
-      return await buffer.loadTimeline(ds);
+      const posts = await feed.getTimeline(ds);
+      return await buffer.loadTimeline(ds, posts);
     },
     // app.bsky.notification.listNotifications
     async listNotifications(): Promise<unknown> {
-      return await notification.listNotifications(ds);
+      const posts = await notification.listNotifications(ds);
+      return await buffer.loadTimeline(ds, posts);
     },
   };
 }

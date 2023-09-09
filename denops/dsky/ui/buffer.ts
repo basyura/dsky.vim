@@ -1,10 +1,11 @@
 import { Denops, unknownutil, helper, fn } from "./../deps.ts";
 import { Post } from "./../types.ts";
 import * as consts from "./../consts.ts";
-import * as feed from "./../api/feed.ts";
 
-export async function loadTimeline(ds: Denops): Promise<void> {
-  const posts = await feed.getTimeline(ds);
+export async function loadTimeline(
+  ds: Denops,
+  posts: Array<Post>
+): Promise<void> {
   const separator = await createSeparator(ds);
 
   await preProcess(ds);
