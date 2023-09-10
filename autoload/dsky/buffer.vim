@@ -4,7 +4,7 @@ let s:AUTHOR_LEN = 16
 let s:last_bufnr = 0
 let s:buf_name = "dsky"
 
-function! dsky#buffer#load(posts)
+function! dsky#buffer#load(posts) abort
   let sep = s:createSeparator()
 
   call s:switch_buffer()
@@ -25,7 +25,7 @@ function! dsky#buffer#load(posts)
 endfunction
 
 
-function! s:switch_buffer()
+function! s:switch_buffer() abort
   " get buf no from buffer's name
   let bufnr = -1
   let num   = bufnr('$')
@@ -61,13 +61,13 @@ function! s:switch_buffer()
   endif
 endfunction
 
-function! s:pre_proc()
+function! s:pre_proc() abort
   setlocal modifiable
   silent %delete _
 endfunction
 
 
-function! s:post_proc()
+function! s:post_proc() abort
     setfiletype dsky
     execute "setlocal breakindentopt=shift:" . s:AUTHOR_LEN
     setlocal bufhidden=wipe
@@ -79,8 +79,9 @@ function! s:post_proc()
 
     nmap <silent> <buffer> <Leader><Leader>  <Plug>(dsky_reload)
     nmap <silent> <buffer> o  <Plug>(dsky_open_links)
+    nmap <silent> <buffer> u  <Plug>(dsky_author_feed)
 
-    call cursor(1, s:AUTHOR_LEN+ 1)
+    call cursor(1, s:AUTHOR_LEN + 1)
 endfunction
 
 function! s:format(post) abort
@@ -103,12 +104,12 @@ function! s:format(post) abort
   return lines
 endfunction
 
-function s:createSeparator()
+function s:createSeparator() abort
   let width = winwidth(0)
   return s:padding("", "-", width)
 endfunction
 
-function s:padding(s, sep, len)
+function s:padding(s, sep, len) abort
   let pad_len = a:len - strwidth(a:s)
   if pad_len <= 0
     return a:s
