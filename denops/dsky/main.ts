@@ -12,6 +12,7 @@ export async function main(ds: Denops): Promise<void> {
     async createRecord(text: unknown): Promise<void> {
       return await repo.createRecord(ds, text);
     },
+    // app.bsky.feed.getTimeline
     async getTimeline(): Promise<unknown> {
       return await feed.getTimeline(ds);
     },
@@ -19,6 +20,12 @@ export async function main(ds: Denops): Promise<void> {
     async getAuthorFeed(actor: unknown): Promise<unknown> {
       unknownutil.ensureString(actor);
       return await feed.getAuthorFeed(ds, actor);
+    },
+    // app.bsky.feed.like
+    async like(uri: unknown, cid: unknown): Promise<unknown> {
+      unknownutil.ensureString(uri);
+      unknownutil.ensureString(cid);
+      return await feed.like(ds, uri, cid);
     },
     // app.bsky.notification.listNotifications
     async listNotifications(): Promise<unknown> {

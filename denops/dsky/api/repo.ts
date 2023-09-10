@@ -1,9 +1,7 @@
 // https://atproto.com/lexicons/com-atproto-repo
 import { Denops, unknownutil, helper } from "./../deps.ts";
 import * as proxy from "./proxy.ts";
-
-const URL_CREATE_RECORD =
-  "https://bsky.social/xrpc/com.atproto.repo.createRecord";
+import * as consts from "./../consts.ts";
 
 // https://atproto.com/lexicons/com-atproto-repo#comatprotorepocreaterecord
 export const createRecord = async (
@@ -35,7 +33,7 @@ const post = async (ds: Denops, text: string) => {
         "langs" : ["ja"]
       }
     }`;
-  const res = await proxy.post(ds, URL_CREATE_RECORD, body);
+  const res = await proxy.post(ds, consts.URL_CREATE_RECORD, body);
   const json = await res.json();
   return json;
 };

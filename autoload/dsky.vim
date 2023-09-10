@@ -26,6 +26,19 @@ function! dsky#author_feed(...) abort
   call dsky#buffer#load(posts)
 endfunction
 "
+function! dsky#like() abort
+  let num = line(".")
+  if !has_key(b:dsky_buf, num)
+    echo "no post"
+    return
+  endif
+  let uri = b:dsky_buf[num].uri
+  let cid = b:dsky_buf[num].cid
+
+  call dsky#api#like(uri, cid)
+   
+endfunction
+"
 function! dsky#open_links() abort
   let line = getline(".")
   let matched = matchlist(line, 'https\?://[0-9A-Za-z_#?~=\-+%\.\/:]\+')
@@ -34,5 +47,4 @@ function! dsky#open_links() abort
   endif
   execute "OpenBrowser " . matched[0]
 endfunction
-
 

@@ -44,6 +44,29 @@ export async function getAuthorFeed(
   return posts;
 }
 
+export async function like(
+  ds: Denops,
+  uri: string,
+  cid: string
+): Promise<void> {
+  const body = `{
+      "repo": "$SESSION_DID",
+      "collection": "app.bsky.feed.like",
+      "subject" : {
+        "uri" : "${uri}",
+        "cid" : "${cid}"
+      } ,
+      "createdAt" : "${new Date().toISOString()}"
+    }`;
+
+  console.log(JSON.parse(body));
+  const res = await proxy.post(ds, consts.URL_CREATE_RECORD, body);
+
+  console.log(res);
+  const json = await res.json();
+  return json;
+}
+
 async function dump(ds: Denops, json: any) {
   const debug_path = await fn.expand(ds, "~/Desktop/debug.json");
   unknownutil.ensureString(debug_path);

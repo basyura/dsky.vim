@@ -78,8 +78,9 @@ function! s:post_proc() abort
     setlocal signcolumn=no
 
     nmap <silent> <buffer> <Leader><Leader>  <Plug>(dsky_reload)
-    nmap <silent> <buffer> o  <Plug>(dsky_open_links)
-    nmap <silent> <buffer> u  <Plug>(dsky_author_feed)
+    nmap <silent> <buffer> o      <Plug>(dsky_open_links)
+    nmap <silent> <buffer> u      <Plug>(dsky_author_feed)
+    nmap <silent> <buffer> <C-f>  <Plug>(dsky_like)
 
     call cursor(1, s:AUTHOR_LEN + 1)
 endfunction

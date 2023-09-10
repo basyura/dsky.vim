@@ -7,11 +7,15 @@ export class Post {
   text: string;
   createdAt: string;
   feature: string;
+  uri: string;
+  cid: string;
   //
   constructor(post: any) {
     this.name = post.author.displayName;
     this.handle = post.author.handle;
     this.text = post.record.text;
+    this.uri = post.uri;
+    this.cid = post.cid;
 
     let cdate = ptera.datetime(post.record.createdAt);
     cdate = cdate.add({ hour: cdate.offsetHour() });
