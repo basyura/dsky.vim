@@ -2,7 +2,6 @@ import { Denops, fn, unknownutil } from "./deps.ts";
 import * as repo from "./api/repo.ts";
 import * as notification from "./api/notification.ts";
 import * as path from "./api/path.ts";
-import * as buffer from "./ui/buffer.ts";
 import * as feed from "./api/feed.ts";
 
 export async function main(ds: Denops): Promise<void> {
@@ -19,13 +18,11 @@ export async function main(ds: Denops): Promise<void> {
     // app.bsky.feed.getAuthorFeed
     async getAuthorFeed(actor: unknown): Promise<unknown> {
       unknownutil.ensureString(actor);
-      const posts = await feed.getAuthorFeed(ds, actor);
-      return await buffer.loadTimeline(ds, posts);
+      return await feed.getAuthorFeed(ds, actor);
     },
     // app.bsky.notification.listNotifications
     async listNotifications(): Promise<unknown> {
-      const posts = await notification.listNotifications(ds);
-      return await buffer.loadTimeline(ds, posts);
+      return await notification.listNotifications(ds);
     },
   };
 }
