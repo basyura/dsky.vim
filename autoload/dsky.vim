@@ -25,16 +25,10 @@ function! dsky#timeline()
   call s:post_proc()
 endfunction
 
-" function! dsky#timeline()
-"   call s:switch_buffer()
-"   call denops#request("dsky", "getTimeline", [])
-" endfunction
-
 function! dsky#author_feed(actor)
   call s:switch_buffer()
   call denops#request("dsky", "getAuthorFeed", [a:actor])
 endfunction
-
 
 function! dsky#notifications()
   call s:switch_buffer()
@@ -110,28 +104,15 @@ function! s:post_proc()
 endfunction
 
 function! s:format(post) abort
-
-  let name = a:post.name
-  " 長い名前を削る
-  if (strwidth(name) > s:AUTHOR_LEN)
-    let tmp = ""
-    for i in range(0, strcharlen(name))
-      let c = strcharpart(name, i, 1)
-      if strwidth(tmp . c) > s:AUTHOR_LEN - 1
-        break
-      endif
-      let tmp .= c
-    endfor
-    let name = tmp
-  endif
-
-
+  " 長い名前は削る
+  let name = s:substr(a:post.name, s:AUTHOR_LEN -1)
   let name = s:padding(name, " ", s:AUTHOR_LEN)
+
   let lines = split(a:post.text, "\n")
   let lines[0] = name . lines[0]
   let lines[len(lines)-1] .= " - " . a:post.createdAt
 
-  " 先頭にインデントを付ける
+  " 2行目以降の先頭にインデントを付ける
   let pad = s:padding("", "　", s:AUTHOR_LEN/2)
   if len(lines) > 1
     for i in range(1,len(lines)-1)
@@ -158,4 +139,22 @@ function s:padding(s, sep, len)
     let result .= a:sep
   endfor
   return result
+endfunction
+
+function s:substr(str, len) abort
+  if (strwidth(a:str) <= a:len)
+    return a:str
+  endif
+
+  let tmp = ""
+  for i in range(0, strcharlen(a:str))
+    let c = strcharpart(a:str, i, 1)
+    if strwidth(tmp . c) > a:len
+      break
+    endif
+    let tmp .= c
+  endfor
+
+  return tmp
+
 endfunction
