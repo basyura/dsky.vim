@@ -13,6 +13,9 @@ export async function main(ds: Denops): Promise<void> {
     async createRecord(text: unknown): Promise<void> {
       return await repo.createRecord(ds, text);
     },
+    async getTimeline2(): Promise<unknown> {
+      return await feed.getTimeline(ds);
+    },
     // app.bsky.feed.getTimeline
     async getTimeline(): Promise<unknown> {
       const posts = await feed.getTimeline(ds);

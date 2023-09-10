@@ -2,16 +2,20 @@ import { Denops, unknownutil, fn, ptera } from "./deps.ts";
 import * as consts from "./consts.ts";
 
 export class Post {
-  author: string;
+  name: string;
+  handle: string;
   text: string;
-  createdAt: ptera.DateTime;
+  createdAt: string;
   feature: string;
   //
   constructor(post: any) {
-    this.author = post.author.displayName;
+    this.name = post.author.displayName;
+    this.handle = post.author.handle;
     this.text = post.record.text;
-    this.createdAt = ptera.datetime(post.record.createdAt);
-    this.createdAt = this.createdAt.add({ hour: this.createdAt.offsetHour() });
+
+    let cdate = ptera.datetime(post.record.createdAt);
+    cdate = cdate.add({ hour: cdate.offsetHour() });
+    this.createdAt = cdate.format("MM/dd HH:mm").toString();
     this.feature = "";
 
     const facets = post.record.facets;
@@ -22,8 +26,9 @@ export class Post {
   //
   async format(ds: Denops): Promise<Array<string>> {
     const lines = this.text.split("\n");
-    lines[lines.length - 1] += ` - ${this.createdAt.format("MM/dd HH:mm")}`;
-    let name = this.author;
+    // lines[lines.length - 1] += ` - ${this.createdAt.format("MM/dd HH:mm")}`;
+    lines[lines.length - 1] += ` - ${this.createdAt}`;
+    let name = this.name;
     if (name == null) {
       name = "*****";
     }
