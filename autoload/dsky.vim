@@ -1,5 +1,4 @@
 
-
 let g:dsky_open_buffer_cmd = 'edit!'
 let s:last_bufnr = 0
 let s:buf_name = "dsky"
@@ -9,7 +8,7 @@ function! dsky#timeline()
   call denops#request("dsky", "getTimeline", [])
 endfunction
 
-function! dsky#authorFeed(actor)
+function! dsky#author_feed(actor)
   call s:switch_buffer()
   call denops#request("dsky", "getAuthorFeed", [a:actor])
 endfunction
