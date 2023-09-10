@@ -9,6 +9,11 @@ function! dsky#timeline()
   call denops#request("dsky", "getTimeline", [])
 endfunction
 
+function! dsky#authorFeed(actor)
+  call s:switch_buffer()
+  call denops#request("dsky", "getAuthorFeed", [a:actor])
+endfunction
+
 
 function! dsky#notifications()
   call s:switch_buffer()

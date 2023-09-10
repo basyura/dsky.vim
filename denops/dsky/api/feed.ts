@@ -24,6 +24,26 @@ export async function getTimeline(ds: Denops): Promise<Array<Post>> {
   return posts;
 }
 
+export async function getAuthorFeed(
+  ds: Denops,
+  actor: string
+): Promise<Array<Post>> {
+  const res = await proxy.get(
+    ds,
+    consts.URL_GET_AUTHOR_FEED + `?actor=${actor}`
+  );
+  const json = await res.json();
+  dump(ds, json);
+
+  const posts: Array<Post> = [];
+  const len = json.feed.length;
+  for (let i = 0; i < len; i++) {
+    posts.push(new Post(json.feed[i].post));
+  }
+
+  return posts;
+}
+
 async function dump(ds: Denops, json: any) {
   const debug_path = await fn.expand(ds, "~/Desktop/debug.json");
   unknownutil.ensureString(debug_path);

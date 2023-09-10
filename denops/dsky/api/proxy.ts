@@ -5,22 +5,26 @@ import * as server from "./server.ts";
  *
  */
 export async function get(ds: Denops, url: string): Promise<Response> {
-  let session = await server.getSession(ds);
-  let res = await _get(session, url);
-  if (res.status != 200) {
-    const json = await res.json();
-    if (json.error == "ExpiredToken") {
-      session = await server.newSession(ds);
-      res = await _get(session, url);
-    } else {
-      helper.execute(
-        ds,
-        `echoerr "request error : ${res.status} / ${res.statusText}"`
-      );
+  try {
+    let session = await server.getSession(ds);
+    let res = await _get(session, url);
+    if (res.status != 200) {
+      const json = await res.json();
+      if (json.error == "ExpiredToken") {
+        session = await server.newSession(ds);
+        res = await _get(session, url);
+      } else {
+        helper.execute(
+          ds,
+          `echoerr "request error : ${res.status} / ${res.statusText}"`
+        );
+      }
     }
+    return res;
+  } catch (e) {
+    helper.execute(ds, `echoerr "request error : ${e.exception}"`);
+    return new Response();
   }
-
-  return res;
 }
 
 async function _get(session: Session, url: string): Promise<Response> {
