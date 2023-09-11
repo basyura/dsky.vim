@@ -86,23 +86,27 @@ function! s:post_proc() abort
 endfunction
 
 function! s:format(post) abort
-  " 長い名前は削る
-  let name = s:substr(a:post.name, s:AUTHOR_LEN -1)
-  let name = s:padding(name, " ", s:AUTHOR_LEN)
+  try
+    " 長い名前は削る
+    let name = s:substr(a:post.name, s:AUTHOR_LEN -1)
+    let name = s:padding(name, " ", s:AUTHOR_LEN)
 
-  let lines = split(a:post.text, "\n")
-  let lines[0] = name . lines[0]
-  let lines[len(lines)-1] .= " - " . a:post.createdAt
+    let lines = split(a:post.text, "\n")
+    let lines[0] = name . lines[0]
+    let lines[len(lines)-1] .= " - " . a:post.createdAt
 
-  " 2行目以降の先頭にインデントを付ける
-  let pad = s:padding("", "　", s:AUTHOR_LEN/2)
-  if len(lines) > 1
-    for i in range(1,len(lines)-1)
-      let lines[i] = pad . lines[i]
-    endfor
-  endif
+    " 2行目以降の先頭にインデントを付ける
+    let pad = s:padding("", "　", s:AUTHOR_LEN/2)
+    if len(lines) > 1
+      for i in range(1,len(lines)-1)
+        let lines[i] = pad . lines[i]
+      endfor
+    endif
 
-  return lines
+    return lines
+  catch
+    return ["failed to format: " . json_encode(a:post)  ]
+  endtry
 endfunction
 
 function s:createSeparator() abort
