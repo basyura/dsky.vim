@@ -91,7 +91,8 @@ function! s:format(post) abort
     let name = s:substr(a:post.name, s:AUTHOR_LEN -1)
     let name = s:padding(name, " ", s:AUTHOR_LEN)
 
-    let lines = split(a:post.text, "\n")
+    let text = substitute(a:post.text, "http", "\nhttp", "g")
+    let lines = split(text, "\n")
     let lines[0] = name . lines[0]
     let lines[len(lines)-1] .= " - " . a:post.createdAt
 
