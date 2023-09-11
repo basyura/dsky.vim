@@ -7,7 +7,7 @@ let g:loaded_dsky = 1
 command! DSkySay :call dsky#say#open()
 command! DSkyTimeline :call dsky#timeline()
 command! DSkyNotifications :call dsky#notifications()
-command! DSkyAuthorFeed :call dsky#notifications()
+command! -nargs=1 DSkyAuthorFeed :call dsky#author_feed(<f-args>)
 
 
 nnoremap <silent> <Plug>(dsky_say_post_buffer)  :<C-u>call dsky#say#post_buffer()<CR>
