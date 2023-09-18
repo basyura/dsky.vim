@@ -17,9 +17,13 @@ export class Post {
     this.uri = post.uri;
     this.cid = post.cid;
 
-    let cdate = ptera.datetime(post.record.createdAt);
-    cdate = cdate.add({ hour: cdate.offsetHour() });
-    this.createdAt = cdate.format("MM/dd HH:mm").toString();
+    try {
+      let cdate = ptera.datetime(post.record.createdAt);
+      cdate = cdate.add({ hour: cdate.offsetHour() });
+      this.createdAt = cdate.format("MM/dd HH:mm").toString();
+    } catch {
+      this.createdAt = post.record.createdAt
+    }
     this.feature = "";
 
     const facets = post.record.facets;
