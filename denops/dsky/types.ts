@@ -22,12 +22,12 @@ export class Post {
       cdate = cdate.add({ hour: cdate.offsetHour() });
       this.createdAt = cdate.format("MM/dd HH:mm").toString();
     } catch {
-      this.createdAt = post.record.createdAt
+      this.createdAt = post.record.createdAt;
     }
     this.feature = "";
 
     const facets = post.record.facets;
-    if (facets != null && facets[0].features != null) {
+    if (facets != null && facets[0]?.features != null) {
       this.feature = facets[0].features[0].uri;
     }
   }
