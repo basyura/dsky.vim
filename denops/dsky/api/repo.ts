@@ -24,6 +24,7 @@ export const createRecord = async (
 };
 
 const post = async (ds: Denops, text: string) => {
+  text = text.replaceAll("\n", "\\n");
   const body = `{
       "repo": "$SESSION_DID",
       "collection": "app.bsky.feed.post",
