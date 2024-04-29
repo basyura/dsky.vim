@@ -6,6 +6,7 @@ let g:loaded_dsky = 1
 
 command! DSkySay :call dsky#say#open()
 command! DSkyTimeline :call dsky#timeline()
+command! DSkyNewSession :call dsky#new_session()
 command! DSkyNotifications :call dsky#notifications()
 command! -nargs=1 DSkyAuthorFeed :call dsky#author_feed(<f-args>)
 

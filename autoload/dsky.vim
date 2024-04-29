@@ -47,4 +47,10 @@ function! dsky#open_links() abort
   endif
   execute "OpenBrowser " . matched[0]
 endfunction
+"
+function! dsky#new_session() abort
+  call dsky#api#new_session()
+  echo "created new session"
+endfunction
+
 

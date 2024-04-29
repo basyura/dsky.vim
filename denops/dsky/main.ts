@@ -3,6 +3,7 @@ import * as repo from "./api/repo.ts";
 import * as notification from "./api/notification.ts";
 import * as path from "./api/path.ts";
 import * as feed from "./api/feed.ts";
+import * as server from "./api/server.ts";
 
 export async function main(ds: Denops): Promise<void> {
   await initialize(ds);
@@ -31,6 +32,10 @@ export async function main(ds: Denops): Promise<void> {
     async listNotifications(): Promise<unknown> {
       return await notification.listNotifications(ds);
     },
+    // new ssesion
+    async newSession(): Promise<unknown> {
+      return await server.newSession(ds);
+    }
   };
 }
 

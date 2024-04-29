@@ -13,3 +13,7 @@ endfunction
 function! dsky#api#like(uri, cid)
   return denops#request("dsky", "like", [a:uri, a:cid])
 endfunction
+
+function! dsky#api#new_session()
+  return denops#request("dsky", "newSession", [])
+endfunction
