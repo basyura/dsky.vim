@@ -2,6 +2,7 @@ import { Denops, unknownutil, helper, fn } from "./../deps.ts";
 import { Post } from "./../types.ts";
 import * as proxy from "./proxy.ts";
 import * as consts from "./../consts.ts";
+import * as server from "./server.ts";
 
 export async function getTimeline(ds: Denops): Promise<Array<Post>> {
   const start = performance.now();
@@ -9,12 +10,13 @@ export async function getTimeline(ds: Denops): Promise<Array<Post>> {
 
   const json = await res.json();
   dump(ds, json);
+  const session = await server.getSession(ds);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
   for (let i = 0; i < len; i++) {
     if (canView(json.feed[i])) {
-      posts.push(new Post(json.feed[i].post));
+      posts.push(new Post(session, json.feed[i].post));
     }
   }
 

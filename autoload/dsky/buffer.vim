@@ -90,7 +90,6 @@ function! s:format(post) abort
     " 長い名前は削る
     let name = s:substr(a:post.name, s:AUTHOR_LEN -1)
     let name = s:padding(name, " ", s:AUTHOR_LEN)
-    let name = s:padding(name, " ", s:AUTHOR_LEN)
     let text = substitute(a:post.text, "http", "\nhttp", "g")
 
     let lines = split(text, "\n")
@@ -98,7 +97,11 @@ function! s:format(post) abort
       let lines = ["no text"]
     endif
 
-    let lines[0] = name . lines[0]
+    if a:post.isLiked
+      let lines[0] = s:substr(name, s:AUTHOR_LEN - 3) . "🧡 " . lines[0]
+    else
+      let lines[0] = name . lines[0]
+    endif
     let lines[len(lines)-1] .= " - " . a:post.createdAt
 
     " 2行目以降の先頭にインデントを付ける

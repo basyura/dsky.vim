@@ -9,13 +9,15 @@ export class Post {
   feature: string;
   uri: string;
   cid: string;
+  isLiked: boolean;
   //
-  constructor(post: any) {
+  constructor(session: Session, post: any) {
     this.name = post.author.displayName;
     this.handle = post.author.handle;
     this.text = post.record.text;
     this.uri = post.uri;
     this.cid = post.cid;
+    this.isLiked = false;
 
     try {
       let cdate = ptera.datetime(post.record.createdAt);
@@ -24,17 +26,21 @@ export class Post {
     } catch {
       this.createdAt = post.record.createdAt;
     }
-    this.feature = "";
 
+    this.feature = "";
     const facets = post.record.facets;
     if (facets != null && facets[0]?.features != null) {
       this.feature = facets[0].features[0].uri;
+    }
+
+    const like = post.viewer.like as string;
+    if (like != null && like.indexOf(session.did) > 0) {
+      this.isLiked = true;
     }
   }
   //
   async format(ds: Denops): Promise<Array<string>> {
     const lines = this.text.split("\n");
-    // lines[lines.length - 1] += ` - ${this.createdAt.format("MM/dd HH:mm")}`;
     lines[lines.length - 1] += ` - ${this.createdAt}`;
     let name = this.name;
     if (name == null) {
