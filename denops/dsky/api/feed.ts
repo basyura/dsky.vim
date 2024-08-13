@@ -11,14 +11,20 @@ export async function getTimeline(
   const start = performance.now();
   const url = consts.URL_GET_TIME_LINE + `?limit=${limit}`;
   const res = await proxy.get(ds, url);
+  const session = res.session;
   const json = await res.json();
   // dump(ds, json);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
   for (let i = 0; i < len; i++) {
-    if (canView(json.feed[i])) {
-      posts.push(new Post(res.session, json.feed[i].post));
+    try {
+      if (canView(json.feed[i])) {
+        posts.push(new Post(session, json.feed[i].post));
+      }
+    } catch (e) {
+      console.error(e)
+      console.error(json.feed[i].post);
     }
   }
 
@@ -84,5 +90,5 @@ function canView(feed: any): boolean {
     return true;
   }
 
-  return feed.reply.root.author.did == feed.post.author.did;
+  return feed.reply.root.author?.did == feed.post.author.did;
 }

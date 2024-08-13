@@ -14,7 +14,8 @@ export async function main(ds: Denops): Promise<void> {
       return await repo.createRecord(ds, text);
     },
     // app.bsky.feed.getTimeline
-    async getTimeline(limit: number): Promise<unknown> {
+    async getTimeline(limit: unknown): Promise<unknown> {
+      unknownutil.ensureNumber(limit)
       return await feed.getTimeline(ds, limit);
     },
     // app.bsky.feed.getAuthorFeed
