@@ -2,6 +2,7 @@ if exists('g:loaded_dsky')
   finish
 endif
 let g:loaded_dsky = 1
+let g:dsky_author_len = 16
 
 
 command! DSkySay :call dsky#say#open()

@@ -1,5 +1,4 @@
 let g:dsky_open_buffer_cmd = 'edit!'
-let s:AUTHOR_LEN = 16
 
 let s:last_bufnr = 0
 let s:buf_name = "dsky"
@@ -69,7 +68,7 @@ endfunction
 
 function! s:post_proc() abort
     setfiletype dsky
-    execute "setlocal breakindentopt=shift:" . s:AUTHOR_LEN
+    execute "setlocal breakindentopt=shift:" . g:dsky_author_len
     setlocal bufhidden=wipe
     setlocal noswapfile
     setlocal nomodifiable
@@ -82,14 +81,14 @@ function! s:post_proc() abort
     nmap <silent> <buffer> u      <Plug>(dsky_author_feed)
     nmap <silent> <buffer> <Leader>f  <Plug>(dsky_like)
 
-    call cursor(1, s:AUTHOR_LEN + 1)
+    call cursor(1, g:dsky_author_len + 1)
 endfunction
 
 function! s:format(post) abort
   try
     " 長い名前は削る
-    let name = s:substr(a:post.name, s:AUTHOR_LEN -1)
-    let name = s:padding(name, " ", s:AUTHOR_LEN)
+    let name = s:substr(a:post.name, g:dsky_author_len -1)
+    let name = s:padding(name, " ", g:dsky_author_len)
     let text = substitute(a:post.text, "http", "\nhttp", "g")
 
     let lines = split(text, "\n")
@@ -98,14 +97,14 @@ function! s:format(post) abort
     endif
 
     if a:post.isLiked
-      let lines[0] = s:substr(name, s:AUTHOR_LEN - 3) . "🧡 " . lines[0]
+      let lines[0] = s:substr(name, g:dsky_author_len - 3) . "🧡 " . lines[0]
     else
       let lines[0] = name . lines[0]
     endif
     let lines[len(lines)-1] .= " - " . a:post.createdAt
 
     " 2行目以降の先頭にインデントを付ける
-    let pad = s:padding("", "　", s:AUTHOR_LEN/2)
+    let pad = s:padding("", "　", g:dsky_author_len/2)
     if len(lines) > 1
       for i in range(1,len(lines)-1)
         let lines[i] = pad . lines[i]
@@ -114,7 +113,7 @@ function! s:format(post) abort
 
     return lines
   catch
-    return ["failed to format: " . json_encode(a:post), v:exception, v:throwpoint, "count: " . string(cnt) ]
+    return ["failed to format: " . json_encode(a:post), v:exception, v:throwpoint ]
   endtry
 endfunction
 
@@ -137,19 +136,5 @@ function s:padding(s, sep, len) abort
 endfunction
 
 function s:substr(str, len) abort
-  if (strwidth(a:str) <= a:len)
-    return a:str
-  endif
-
-  let tmp = ""
-  for i in range(0, strcharlen(a:str))
-    let c = strcharpart(a:str, i, 1)
-    if strwidth(tmp . c) > a:len
-      break
-    endif
-    let tmp .= c
-  endfor
-
-  return tmp
-
+  return dsky#util#str#sub(a:str, a:len)
 endfunction

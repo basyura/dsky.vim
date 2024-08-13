@@ -35,8 +35,24 @@ function! dsky#like() abort
   let uri = b:dsky_buf[num].uri
   let cid = b:dsky_buf[num].cid
 
-  call dsky#api#like(uri, cid)
+  let res = dsky#api#like(uri, cid)
+  if res.status != 200
+    echo "failed ..."
+    return
+  endif
    
+  echo "liked 🧡"
+
+  let line = getline(num)
+  let pair = dsky#util#str#split(line, g:dsky_author_len)
+  let name = dsky#util#str#sub(pair[0], g:dsky_author_len - 3) . "🧡 "
+  let msg  = name . pair[1]
+
+  set modifiable
+  call setline(num, msg)
+  set nomodifiable
+
+
 endfunction
 "
 function! dsky#open_links() abort

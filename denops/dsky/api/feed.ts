@@ -67,6 +67,8 @@ export async function like(
   const res = await proxy.post(ds, consts.URL_LIKE, JSON.stringify(body));
 
   const json = await res.json();
+  json.status = res.status;
+
   return json;
 }
 

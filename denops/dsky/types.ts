@@ -33,7 +33,7 @@ export class Post {
       this.feature = facets[0].features[0].uri;
     }
 
-    const like = post.viewer.like as string;
+    const like = post.viewer?.like as string;
     if (like != null && like.indexOf(session.did) > 0) {
       this.isLiked = true;
     }
