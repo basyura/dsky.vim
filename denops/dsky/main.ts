@@ -14,8 +14,8 @@ export async function main(ds: Denops): Promise<void> {
       return await repo.createRecord(ds, text);
     },
     // app.bsky.feed.getTimeline
-    async getTimeline(): Promise<unknown> {
-      return await feed.getTimeline(ds);
+    async getTimeline(limit: number): Promise<unknown> {
+      return await feed.getTimeline(ds, limit);
     },
     // app.bsky.feed.getAuthorFeed
     async getAuthorFeed(actor: unknown): Promise<unknown> {
@@ -35,7 +35,7 @@ export async function main(ds: Denops): Promise<void> {
     // new ssesion
     async newSession(): Promise<unknown> {
       return await server.newSession(ds);
-    }
+    },
   };
 }
 

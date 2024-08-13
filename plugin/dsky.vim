@@ -3,6 +3,7 @@ if exists('g:loaded_dsky')
 endif
 let g:loaded_dsky = 1
 let g:dsky_author_len = 16
+let g:dsky_timeline_limit = 40
 
 
 command! DSkySay :call dsky#say#open()

@@ -1,5 +1,5 @@
-function! dsky#api#timeline()
-  return denops#request("dsky", "getTimeline", [])
+function! dsky#api#timeline(limit)
+  return denops#request("dsky", "getTimeline", [a:limit])
 endfunction
 
 function! dsky#api#notifications()

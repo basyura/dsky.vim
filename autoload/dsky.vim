@@ -1,6 +1,10 @@
 "
-function! dsky#timeline() abort
-  let posts = dsky#api#timeline()
+function! dsky#timeline(...) abort
+  let limit = g:dsky_timeline_limit
+  if a:0 != 0
+    let limit = a:1
+  endif
+  let posts = dsky#api#timeline(limit)
   call dsky#buffer#load(posts)
 endfunction
 "

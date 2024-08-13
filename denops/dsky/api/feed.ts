@@ -4,10 +4,13 @@ import * as proxy from "./proxy.ts";
 import * as consts from "./../consts.ts";
 import * as server from "./server.ts";
 
-export async function getTimeline(ds: Denops): Promise<Array<Post>> {
+export async function getTimeline(
+  ds: Denops,
+  limit: number
+): Promise<Array<Post>> {
   const start = performance.now();
-  const res = await proxy.get(ds, consts.URL_GET_TIME_LINE + "?limit=100");
-
+  const url = consts.URL_GET_TIME_LINE + `?limit=${limit}`;
+  const res = await proxy.get(ds, url);
   const json = await res.json();
   dump(ds, json);
   const session = await server.getSession(ds);
