@@ -36,11 +36,12 @@ export async function getAuthorFeed(
   );
   const json = await res.json();
   dump(ds, json);
+  const session = await server.getSession(ds);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
   for (let i = 0; i < len; i++) {
-    posts.push(new Post(json.feed[i].post));
+    posts.push(new Post(session, json.feed[i].post));
   }
 
   return posts;
@@ -51,20 +52,20 @@ export async function like(
   uri: string,
   cid: string
 ): Promise<void> {
-  const body = `{
-      "repo": "$SESSION_DID",
-      "collection": "app.bsky.feed.like",
-      "subject" : {
-        "uri" : "${uri}",
-        "cid" : "${cid}"
-      } ,
-      "createdAt" : "${new Date().toISOString()}"
-    }`;
+  const body = {
+    repo: "$SESSION_DID",
+    collection: "app.bsky.feed.like",
+    record: {
+      subject: {
+        uri: uri,
+        cid: cid,
+      },
+      createdAt: new Date().toISOString(),
+    },
+  };
 
-  console.log(JSON.parse(body));
-  const res = await proxy.post(ds, consts.URL_CREATE_RECORD, body);
+  const res = await proxy.post(ds, consts.URL_LIKE, JSON.stringify(body));
 
-  console.log(res);
   const json = await res.json();
   return json;
 }

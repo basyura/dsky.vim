@@ -47,14 +47,20 @@ export async function post(
   const session = await server.newSession(ds);
   data = data.replace("$SESSION_DID", session.did);
 
-  const res = await fetch(url, {
+  const param = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${session.accessJwt}`,
     },
     body: data,
-  });
+  };
+
+  const res = await fetch(url, param);
+
+  if (res.status != 200) {
+    console.log(res.status, res.statusText, "\n", JSON.stringify(param));
+  }
 
   return res;
 }
