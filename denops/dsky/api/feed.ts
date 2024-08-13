@@ -12,14 +12,13 @@ export async function getTimeline(
   const url = consts.URL_GET_TIME_LINE + `?limit=${limit}`;
   const res = await proxy.get(ds, url);
   const json = await res.json();
-  dump(ds, json);
-  const session = await server.getSession(ds);
+  // dump(ds, json);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
   for (let i = 0; i < len; i++) {
     if (canView(json.feed[i])) {
-      posts.push(new Post(session, json.feed[i].post));
+      posts.push(new Post(res.session, json.feed[i].post));
     }
   }
 
@@ -38,13 +37,12 @@ export async function getAuthorFeed(
     consts.URL_GET_AUTHOR_FEED + `?actor=${actor}`
   );
   const json = await res.json();
-  dump(ds, json);
-  const session = await server.getSession(ds);
+  // dump(ds, json);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
   for (let i = 0; i < len; i++) {
-    posts.push(new Post(session, json.feed[i].post));
+    posts.push(new Post(res.session, json.feed[i].post));
   }
 
   return posts;

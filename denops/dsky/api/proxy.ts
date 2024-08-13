@@ -20,6 +20,7 @@ export async function get(ds: Denops, url: string): Promise<Response> {
         );
       }
     }
+    res.session = session;
     return res;
   } catch (e) {
     helper.execute(ds, `echoerr "request error : ${e.exception}"`);
@@ -62,5 +63,6 @@ export async function post(
     console.log(res.status, res.statusText, "\n", JSON.stringify(param));
   }
 
+  res.session = session;
   return res;
 }

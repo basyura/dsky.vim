@@ -6,7 +6,6 @@ import * as server from "./server.ts";
 
 export async function listNotifications(ds: Denops): Promise<Array<Post>> {
   const res = await proxy.get(ds, consts.URL_LIST_NOTIFICATIONS);
-  const session = await server.getSession(ds);
 
   const json = await res.json();
   const posts: Array<Post> = [];
@@ -16,7 +15,7 @@ export async function listNotifications(ds: Denops): Promise<Array<Post>> {
     if (item.reason != "reply") {
       continue;
     }
-    posts.push(new Post(session, item));
+    posts.push(new Post(res.session, item));
   }
 
   dump(ds, json);
