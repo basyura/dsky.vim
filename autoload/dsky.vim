@@ -52,9 +52,9 @@ function! dsky#like() abort
   let name = dsky#util#str#sub(pair[0], g:dsky_author_len - 3) . "🧡 "
   let msg  = name . pair[1]
 
-  set modifiable
+  setlocal modifiable
   call setline(num, msg)
-  set nomodifiable
+  setlocal nomodifiable
 
 
 endfunction
