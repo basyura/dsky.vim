@@ -75,6 +75,7 @@ function! s:post_proc() abort
     setlocal nonumber
     setlocal nomodified
     setlocal signcolumn=no
+    setlocal breakindent
 
     nmap <silent> <buffer> <Leader><Leader>  <Plug>(dsky_reload)
     nmap <silent> <buffer> o      <Plug>(dsky_open_links)
