@@ -14,3 +14,19 @@ export async function expand(ds: Denops, path: string): Promise<string> {
   unknownutil.ensureString(expath);
   return expath;
 }
+
+export async function getConfigDir(ds: Denops): Promise<string> {
+  const home = Deno.env.get("USERPROFILE") ?? Deno.env.get("HOME");
+  if (home) {
+    return `${home.replace(/\\/g, "/")}/.config/dsky`;
+  }
+
+  return await expand(ds, "~/.config/dsky");
+}
+
+export async function getConfigFile(
+  ds: Denops,
+  name: string,
+): Promise<string> {
+  return `${await getConfigDir(ds)}/${name}`;
+}

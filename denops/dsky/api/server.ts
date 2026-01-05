@@ -4,10 +4,10 @@ import { Session } from "./../types.ts";
 import * as path from "./path.ts";
 
 const sessionUrl = "https://bsky.social/xrpc/com.atproto.server.createSession";
-const configPath = "~/.config/dsky/session.json";
+const sessionFileName = "session.json";
 
 export async function getSession(ds: Denops): Promise<Session> {
-  const confPath = await path.expand(ds, configPath);
+  const confPath = await path.getConfigFile(ds, sessionFileName);
   if (!(await path.isExists(confPath))) {
     return await newSession(ds);
   }
@@ -27,7 +27,7 @@ export async function newSession(ds: Denops): Promise<Session> {
   });
   const json = await res.json();
 
-  const confPath = await path.expand(ds, configPath);
+  const confPath = await path.getConfigFile(ds, sessionFileName);
   Deno.writeTextFile(confPath, JSON.stringify(json, null, 2));
 
   return new Session(json);

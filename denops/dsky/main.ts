@@ -42,7 +42,7 @@ export async function main(ds: Denops): Promise<void> {
 
 async function initialize(ds: Denops): Promise<void> {
   // make config dir
-  const dir = await path.expand(ds, "~/.config/dsky");
+  const dir = await path.getConfigDir(ds);
   try {
     await Deno.stat(dir);
   } catch {
