@@ -4,6 +4,7 @@ import * as notification from "./api/notification.ts";
 import * as path from "./api/path.ts";
 import * as feed from "./api/feed.ts";
 import * as server from "./api/server.ts";
+import * as handle from "./api/handle.ts";
 
 export async function main(ds: Denops): Promise<void> {
   await initialize(ds);
@@ -32,6 +33,10 @@ export async function main(ds: Denops): Promise<void> {
     // app.bsky.notification.listNotifications
     async listNotifications(): Promise<unknown> {
       return await notification.listNotifications(ds);
+    },
+    // handle completion
+    async getHandles(): Promise<unknown> {
+      return await handle.loadHandles(ds);
     },
     // new ssesion
     async newSession(): Promise<unknown> {

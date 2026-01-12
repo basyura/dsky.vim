@@ -3,6 +3,7 @@ import { Post } from "./../types.ts";
 import * as proxy from "./proxy.ts";
 import * as consts from "./../consts.ts";
 import * as server from "./server.ts";
+import * as handle from "./handle.ts";
 
 export async function getTimeline(
   ds: Denops,
@@ -30,6 +31,10 @@ export async function getTimeline(
 
   const end = performance.now();
   helper.echo(ds, `getTimeline ... ${Math.floor(end - start)}ms`);
+
+  // handle自動保存
+  const handles = handle.extractHandles(posts);
+  await handle.saveHandles(ds, handles);
 
   return posts;
 }

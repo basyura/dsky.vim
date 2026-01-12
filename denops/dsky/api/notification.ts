@@ -3,6 +3,7 @@ import * as proxy from "./proxy.ts";
 import * as consts from "./../consts.ts";
 import { Post } from "../types.ts";
 import * as server from "./server.ts";
+import * as handle from "./handle.ts";
 
 export async function listNotifications(ds: Denops): Promise<Array<Post>> {
   const res = await proxy.get(ds, consts.URL_LIST_NOTIFICATIONS);
@@ -19,6 +20,10 @@ export async function listNotifications(ds: Denops): Promise<Array<Post>> {
   }
 
   dump(ds, json);
+
+  // handle自動保存
+  const handles = handle.extractHandles(posts);
+  await handle.saveHandles(ds, handles);
 
   return posts;
 }
