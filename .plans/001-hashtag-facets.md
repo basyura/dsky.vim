@@ -1,5 +1,9 @@
 # ハッシュタグ facets 対応実装計画
 
+## Links
+
+* 8c2b0df : Add hashtag facets support for posts
+
 ## 問題
 
 Vim から `#tag` を投稿しても Bluesky Web 上でタグとして認識されない。
