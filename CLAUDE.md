@@ -27,7 +27,7 @@ Vim command (:DSkyTimeline)
   → denops#request('dsky', 'getTimeline', [...])
   → denops/dsky/main.ts dispatcher
   → api/feed.ts (API呼び出し)
-  → api/proxy.ts (認証ヘッダー付与)
+  → api/proxy.ts (認証ヘッダー付与、トークン自動リフレッシュ)
   → api/server.ts (セッション管理)
 ```
 
@@ -36,16 +36,21 @@ Vim command (:DSkyTimeline)
 ### プラグインのテスト
 ```vim
 " プラグインマネージャーでこのリポジトリを読み込んでから
-:DSkyTimeline        " タイムライン表示
-:DSkyNotifications   " 通知一覧表示
-:DSkySay            " 投稿バッファを開く
-:DSkyNewSession     " 新しいセッションを作成
-:DSkyAuthorFeed <actor>  " 特定ユーザーのフィードを表示
+:DSkyTimeline            " タイムライン表示
+:DSkyNotifications       " 通知一覧表示
+:DSkySay                 " 投稿バッファを開く
+:DSkyNewSession          " 新しいセッションを作成
+:DSkyAuthorFeed <actor>  " 特定ユーザーのフィードを表示（ハンドル補完あり）
 ```
+
+### バッファ内キーマッピング
+- `<Leader><Leader>` - タイムラインをリロード
+- `o` - 投稿内のURLを開く
+- `u` - 投稿者のフィードを表示
+- `<Leader>f` - 投稿にいいね
 
 ### 設定
 ```vim
-" .vimrc / init.vim で設定
 let g:dsky_id = 'your_bluesky_id'
 let g:dsky_password = 'your_app_password'
 let g:dsky_author_len = 16        " 表示する著者名の長さ
@@ -53,9 +58,9 @@ let g:dsky_timeline_limit = 40    " タイムラインの取得件数
 ```
 
 ### セッション管理
-- セッション情報は`api/path.ts`の`getConfigDir()`で決定されるディレクトリに保存されます
-- Windowsの場合: `~\AppData\Local\dsky\session.json`
-- macOS/Linuxの場合: `~/.config/dsky/session.json`
+- セッション情報: `~/.config/dsky/session.json` (Windows: `%LOCALAPPDATA%\dsky\session.json`)
+- ハンドルキャッシュ: `~/.config/dsky/handles.txt`
+- セッショントークンはExpiredToken時に`proxy.ts`が自動リフレッシュ
 
 ## Coding Conventions
 
@@ -72,15 +77,14 @@ let g:dsky_timeline_limit = 40    " タイムラインの取得件数
 
 ### API実装パターン
 新しいAPI機能を追加する場合:
-1. `api/`以下に新しいモジュールを作成
-2. `consts.ts`にAPIエンドポイントURLを追加
+1. `consts.ts`にAPIエンドポイントURLを追加
+2. `api/`以下に新しいモジュールを作成
 3. `main.ts`のdispatcherに関数を登録
-4. `autoload/dsky/`または`autoload/dsky/api.vim`からDenops経由で呼び出し
+4. `autoload/dsky/api.vim`からDenops経由で呼び出し
 5. 必要に応じて`plugin/dsky.vim`にコマンドを追加
 
 ## Important Notes
 
-- AT ProtocolのAPIエンドポイントは`consts.ts`に集約されています
-- 認証は`api/proxy.ts`で自動的にAuthorizationヘッダーに付与されます
-- セッショントークンの有効期限が切れた場合は`:DSkyNewSession`で再認証が必要です
-- 投稿本文のエスケープ処理は`autoload/dsky/util/str.vim`を参照してください
+- AT ProtocolのAPIエンドポイントは`consts.ts`に集約
+- 認証は`api/proxy.ts`で自動的にAuthorizationヘッダーに付与
+- 自動テストはなし - 手動でVim上で動作確認
