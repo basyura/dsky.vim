@@ -88,7 +88,8 @@ endfunction
 function! s:format(post) abort
   try
     " 長い名前は削る
-    let name = s:substr(a:post.name, g:dsky_author_len -1)
+    let name = s:display_name(a:post)
+    let name = s:substr(name, g:dsky_author_len -1)
     let name = s:padding(name, " ", g:dsky_author_len)
     let text = substitute(a:post.text, "http", "\nhttp", "g")
 
@@ -119,8 +120,19 @@ function! s:format(post) abort
 endfunction
 
 function s:createSeparator() abort
-  let width = winwidth(0)
-  return s:padding("", "-", width)
+  let width = max([1, winwidth(0) - 2])
+  return repeat("-", width)
+endfunction
+
+function s:display_name(post) abort
+  let name = get(a:post, "name", "")
+  if type(name) != v:t_string || empty(name)
+    let name = get(a:post, "handle", "")
+  endif
+  if type(name) != v:t_string || empty(name)
+    let name = "*****"
+  endif
+  return name
 endfunction
 
 function s:padding(s, sep, len) abort

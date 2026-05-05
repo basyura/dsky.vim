@@ -1,4 +1,4 @@
-import { Denops, unknownutil, fn, ptera } from "./deps.ts";
+import { Denops, fn, ptera, unknownutil } from "./deps.ts";
 import * as consts from "./consts.ts";
 
 export class Post {
@@ -43,7 +43,10 @@ export class Post {
     const lines = this.text.split("\n");
     lines[lines.length - 1] += ` - ${this.createdAt}`;
     let name = this.name;
-    if (name == null) {
+    if (name == null || name === "") {
+      name = this.handle;
+    }
+    if (name == null || name === "") {
       name = "*****";
     }
 
