@@ -3,6 +3,9 @@ export const AUTHOR_LEN = 16;
 export const URL_CREATE_RECORD =
   "https://bsky.social/xrpc/com.atproto.repo.createRecord";
 
+export const URL_UPLOAD_BLOB =
+  "https://bsky.social/xrpc/com.atproto.repo.uploadBlob";
+
 export const URL_GET_TIME_LINE =
   "https://bsky.social/xrpc/app.bsky.feed.getTimeline";
 

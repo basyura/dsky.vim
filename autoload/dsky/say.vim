@@ -63,6 +63,5 @@ function! s:get_text()
 endfunction
 
 function! s:post(text)
-  call denops#request("dsky", "createRecord", [a:text])
-  return 1
+  return denops#request("dsky", "createRecord", [a:text])
 endfunction

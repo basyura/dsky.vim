@@ -11,12 +11,12 @@ export async function main(ds: Denops): Promise<void> {
 
   ds.dispatcher = {
     // com.atproto.repo.createRecord
-    async createRecord(text: unknown): Promise<void> {
+    async createRecord(text: unknown): Promise<boolean> {
       return await repo.createRecord(ds, text);
     },
     // app.bsky.feed.getTimeline
     async getTimeline(limit: unknown): Promise<unknown> {
-      unknownutil.ensureNumber(limit)
+      unknownutil.ensureNumber(limit);
       return await feed.getTimeline(ds, limit);
     },
     // app.bsky.feed.getAuthorFeed
