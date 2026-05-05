@@ -36,6 +36,7 @@ function! s:define_default_key_mappings()
 endfunction
 
 function! s:dsky_say_settings()
+  setlocal buftype=nofile
   setlocal bufhidden=wipe
   setlocal nobuflisted
   setlocal noswapfile
