@@ -1,6 +1,9 @@
 import { Denops, fn, ptera, unknownutil } from "./deps.ts";
 import * as consts from "./consts.ts";
 
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
 export class Post {
   name: string;
   handle: string;
@@ -14,7 +17,7 @@ export class Post {
   constructor(session: Session, post: any) {
     this.name = post.author.displayName;
     this.handle = post.author.handle;
-    this.text = post.record.text;
+    this.text = replaceLinksWithFacetUris(post.record.text, post.record.facets);
     this.uri = post.uri;
     this.cid = post.cid;
     this.isLiked = false;
@@ -40,7 +43,7 @@ export class Post {
   }
   //
   async format(ds: Denops): Promise<Array<string>> {
-    const lines = this.text.split("\n");
+    const lines = compactBlankLines(this.text.split("\n"));
     lines[lines.length - 1] += ` - ${this.createdAt}`;
     let name = this.name;
     if (name == null || name === "") {
@@ -75,6 +78,71 @@ export class Post {
 
     return ret;
   }
+}
+
+function replaceLinksWithFacetUris(text: string, facets: unknown): string {
+  if (!Array.isArray(facets)) {
+    return text;
+  }
+
+  const replacements = facets.flatMap((facet) => {
+    const byteStart = facet?.index?.byteStart;
+    const byteEnd = facet?.index?.byteEnd;
+    if (
+      typeof byteStart !== "number" ||
+      typeof byteEnd !== "number" ||
+      byteStart >= byteEnd
+    ) {
+      return [];
+    }
+
+    const link = facet.features?.find(isLinkFeature);
+    if (link == null) {
+      return [];
+    }
+
+    return [{
+      start: utf8ByteIndexToUtf16Index(text, byteStart),
+      end: utf8ByteIndexToUtf16Index(text, byteEnd),
+      uri: link.uri,
+    }];
+  }).sort((a, b) => b.start - a.start);
+
+  let result = text;
+  for (const replacement of replacements) {
+    result = result.slice(0, replacement.start) +
+      replacement.uri +
+      result.slice(replacement.end);
+  }
+
+  return result;
+}
+
+function utf8ByteIndexToUtf16Index(text: string, byteIndex: number): number {
+  return decoder.decode(encoder.encode(text).slice(0, byteIndex)).length;
+}
+
+function isLinkFeature(
+  feature: unknown,
+): feature is { $type: string; uri: string } {
+  if (feature == null || typeof feature !== "object") {
+    return false;
+  }
+
+  return "$type" in feature &&
+    "uri" in feature &&
+    feature.$type === "app.bsky.richtext.facet#link" &&
+    typeof feature.uri === "string";
+}
+
+function compactBlankLines(lines: string[]): string[] {
+  return lines.filter((line, index) => {
+    return !isBlankLine(line) || !isBlankLine(lines[index - 1] ?? "");
+  });
+}
+
+function isBlankLine(line: string): boolean {
+  return line.trim() === "";
 }
 
 export class Session {

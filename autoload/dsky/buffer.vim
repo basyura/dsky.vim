@@ -91,9 +91,8 @@ function! s:format(post) abort
     let name = s:display_name(a:post)
     let name = s:substr(name, g:dsky_author_len -1)
     let name = s:padding(name, " ", g:dsky_author_len)
-    let text = substitute(a:post.text, "http", "\nhttp", "g")
-
-    let lines = split(text, "\n")
+    let lines = s:split_urls(a:post.text)
+    let lines = s:compact_blank_lines(lines)
     if len(lines) == 0
       let lines = ["no text"]
     endif
@@ -150,4 +149,44 @@ endfunction
 
 function s:substr(str, len) abort
   return dsky#util#str#sub(a:str, a:len)
+endfunction
+
+function s:split_urls(text) abort
+  let result = []
+  for line in split(a:text, "\n", 1)
+    call extend(result, s:split_urls_in_line(line))
+  endfor
+  return result
+endfunction
+
+function s:split_urls_in_line(line) abort
+  let result = []
+  let rest = a:line
+  while v:true
+    let idx = match(rest, '\S[ \t　]*\zshttps\?://')
+    if idx < 0
+      break
+    endif
+    call add(result, substitute(strpart(rest, 0, idx), '[ \t　]\+$', '', ''))
+    let rest = strpart(rest, idx)
+  endwhile
+  call add(result, rest)
+  return result
+endfunction
+
+function s:compact_blank_lines(lines) abort
+  let result = []
+  let prev_blank = v:false
+  for line in a:lines
+    let blank = s:is_blank_line(line)
+    if !(blank && prev_blank)
+      call add(result, line)
+    endif
+    let prev_blank = blank
+  endfor
+  return result
+endfunction
+
+function s:is_blank_line(line) abort
+  return a:line =~# '^[[:space:]　]*$'
 endfunction
