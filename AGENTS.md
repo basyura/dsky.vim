@@ -21,8 +21,9 @@ loading the plugin in Vim/Neovim with Denops enabled.
   grouping related features (e.g., `autoload/dsky/util/str.vim`).
 
 ## Testing Guidelines
-No automated tests or test framework are present. If you add tests, place them
-under a new `tests/` directory and document how to run them.
+- Vim script tests are under `tests/vim/`.
+- Denops TypeScript tests are `*_test.ts` files under `denops/dsky/`.
+- Run all tests with `sh scripts/test.sh`.
 
 ## Commit & Pull Request Guidelines
 - Recent history uses short, imperative commit subjects, often in Japanese.
