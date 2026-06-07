@@ -51,3 +51,71 @@ Deno.test("Post.format uses placeholder when display name and handle are empty",
 
   assertEquals(await post.format(ds), ["*****           hello - created"]);
 });
+
+Deno.test("Post replaces link facets with canonical URIs", () => {
+  const post = new Post(
+    new Session({ did: "did:example:alice" }),
+    {
+      author: {
+        displayName: "Alice",
+        handle: "alice.test",
+      },
+      record: {
+        text: "リンク https://bsky.app",
+        createdAt: "created",
+        facets: [{
+          index: {
+            byteStart: 10,
+            byteEnd: 26,
+          },
+          features: [{
+            $type: "app.bsky.richtext.facet#link",
+            uri: "https://example.com/canonical",
+          }],
+        }],
+      },
+      uri: "at://example/post",
+      cid: "cid",
+      viewer: {
+        like: "at://did:example:alice/like",
+      },
+    },
+  );
+
+  assertEquals(post.text, "リンク https://example.com/canonical");
+  assertEquals(post.isLiked, true);
+});
+
+Deno.test("Post.format truncates long names and compacts blank lines", async () => {
+  const post = new Post(
+    new Session({ did: "did:example:alice" }),
+    {
+      author: {
+        displayName: "very-long-display-name",
+        handle: "alice.test",
+      },
+      record: {
+        text: "first\n\n\nsecond",
+        createdAt: "created",
+      },
+      uri: "at://example/post",
+      cid: "cid",
+    },
+  );
+
+  assertEquals(await post.format(ds), [
+    "very-long-display-first",
+    "　　　　　　　　 ",
+    "　　　　　　　　second - created",
+  ]);
+});
+
+Deno.test("Session creates an empty session from an empty array", () => {
+  assertEquals(new Session([]), {
+    did: "",
+    handle: "",
+    email: "",
+    accessJwt: "",
+    refreshJwt: "",
+  });
+});
