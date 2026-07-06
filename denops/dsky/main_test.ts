@@ -137,6 +137,9 @@ Deno.test("dispatcher methods validate arguments and call implementations", asyn
       if (ctx.n === "g:dsky_password") {
         return "secret";
       }
+      if (ctx.n === "g:dsky_debug_enabled") {
+        return 0;
+      }
       throw new Error(`Unexpected variable: ${ctx.n}`);
     },
     call: (name: string, arg: unknown): unknown => {

@@ -4,6 +4,7 @@ endif
 let g:loaded_dsky = 1
 let g:dsky_author_len = 16
 let g:dsky_timeline_limit = 40
+let g:dsky_debug_enabled = get(g:, 'dsky_debug_enabled', 0)
 
 
 command! DSkySay :call dsky#say#open()

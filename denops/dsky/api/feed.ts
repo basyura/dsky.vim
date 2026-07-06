@@ -1,20 +1,21 @@
-import { Denops, unknownutil, helper, fn } from "./../deps.ts";
+import { Denops, helper } from "./../deps.ts";
 import { Post } from "./../types.ts";
 import * as proxy from "./proxy.ts";
 import * as consts from "./../consts.ts";
 import * as server from "./server.ts";
 import * as handle from "./handle.ts";
+import * as debug from "./debug.ts";
 
 export async function getTimeline(
   ds: Denops,
-  limit: number
+  limit: number,
 ): Promise<Array<Post>> {
   const start = performance.now();
   const url = consts.URL_GET_TIME_LINE + `?limit=${limit}`;
   const res = await proxy.get(ds, url);
   const session = res.session;
   const json = await res.json();
-  // dump(ds, json);
+  await debug.writeDebugJson(ds, json);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
@@ -24,7 +25,7 @@ export async function getTimeline(
         posts.push(new Post(session, json.feed[i].post));
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
       console.error(json.feed[i].post);
     }
   }
@@ -41,14 +42,14 @@ export async function getTimeline(
 
 export async function getAuthorFeed(
   ds: Denops,
-  actor: string
+  actor: string,
 ): Promise<Array<Post>> {
   const res = await proxy.get(
     ds,
-    consts.URL_GET_AUTHOR_FEED + `?actor=${actor}`
+    consts.URL_GET_AUTHOR_FEED + `?actor=${actor}`,
   );
   const json = await res.json();
-  // dump(ds, json);
+  await debug.writeDebugJson(ds, json);
 
   const posts: Array<Post> = [];
   const len = json.feed.length;
@@ -62,7 +63,7 @@ export async function getAuthorFeed(
 export async function like(
   ds: Denops,
   uri: string,
-  cid: string
+  cid: string,
 ): Promise<void> {
   const body = {
     repo: "$SESSION_DID",
@@ -82,12 +83,6 @@ export async function like(
   json.status = res.status;
 
   return json;
-}
-
-async function dump(ds: Denops, json: any) {
-  const debug_path = await fn.expand(ds, "~/Desktop/debug.json");
-  unknownutil.ensureString(debug_path);
-  Deno.writeTextFile(debug_path, JSON.stringify(json));
 }
 
 function canView(feed: any): boolean {
