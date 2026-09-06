@@ -71,6 +71,7 @@ Deno.test("main creates config dir when missing and registers dispatcher", async
         }]);
         assertEquals(typeof ds.dispatcher.createRecord, "function");
         assertEquals(typeof ds.dispatcher.getTimeline, "function");
+        assertEquals(typeof ds.dispatcher.searchPosts, "function");
         assertEquals(typeof ds.dispatcher.getHandles, "function");
       },
     );
@@ -166,6 +167,7 @@ Deno.test("dispatcher methods validate arguments and call implementations", asyn
 
             assertEquals(await dispatcher.createRecord(""), true);
             await assertRejects(() => dispatcher.getTimeline("20"));
+            await assertRejects(() => dispatcher.searchPosts(123));
             await assertRejects(() => dispatcher.getAuthorFeed(1));
             await assertRejects(() => dispatcher.like("uri", 1));
             assertEquals(await dispatcher.listNotifications(), []);

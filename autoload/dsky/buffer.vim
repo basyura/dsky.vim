@@ -3,7 +3,7 @@ let g:dsky_open_buffer_cmd = 'edit!'
 let s:last_bufnr = 0
 let s:buf_name = "dsky"
 
-function! dsky#buffer#load(posts) abort
+function! dsky#buffer#load(posts, ...) abort
   let sep = s:createSeparator()
 
   call s:switch_buffer()
@@ -21,6 +21,10 @@ function! dsky#buffer#load(posts) abort
   let b:dsky_buf = buf
 
   call s:post_proc()
+  unlet! b:dsky_search_query
+  if a:0 > 0
+    let b:dsky_search_query = a:1
+  endif
 endfunction
 
 
@@ -80,6 +84,7 @@ function! s:post_proc() abort
     nmap <silent> <buffer> <Leader><Leader>  <Plug>(dsky_reload)
     nmap <silent> <buffer> o      <Plug>(dsky_open_links)
     nmap <silent> <buffer> u      <Plug>(dsky_author_feed)
+    nmap <silent> <buffer> q      <Plug>(dsky_search)
     nmap <silent> <buffer> <Leader>f  <Plug>(dsky_like)
 
     call cursor(1, g:dsky_author_len + 1)

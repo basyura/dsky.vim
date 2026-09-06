@@ -1,3 +1,7 @@
+function! dsky#api#search(query)
+  return denops#request("dsky", "searchPosts", [a:query])
+endfunction
+
 function! dsky#api#timeline(limit)
   return denops#request("dsky", "getTimeline", [a:limit])
 endfunction

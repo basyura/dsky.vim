@@ -3,6 +3,9 @@ function! denops#request(plugin, method, args) abort
     let g:denops_request_calls = []
   endif
   call add(g:denops_request_calls, [a:plugin, a:method, a:args])
+  if get(g:, 'denops_request_error', '') !=# ''
+    throw g:denops_request_error
+  endif
 
   if exists('g:denops_request_responses')
         \ && has_key(g:denops_request_responses, a:method)

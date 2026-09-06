@@ -6,6 +6,23 @@ import * as server from "./server.ts";
 import * as handle from "./handle.ts";
 import * as debug from "./debug.ts";
 
+export async function searchPosts(
+  ds: Denops,
+  query: string,
+): Promise<Array<Post>> {
+  const params = new URLSearchParams({ q: query });
+  const res = await proxy.get(ds, `${consts.URL_SEARCH_POSTS}?${params}`);
+  if (!res.ok) {
+    throw new Error(`searchPosts failed: ${res.status}`);
+  }
+  const json = await res.json();
+  await debug.writeDebugJson(ds, json);
+  if (!Array.isArray(json.posts)) {
+    throw new Error("searchPosts returned invalid posts");
+  }
+  return json.posts.map((post: any) => new Post(res.session, post));
+}
+
 export async function getTimeline(
   ds: Denops,
   limit: number,

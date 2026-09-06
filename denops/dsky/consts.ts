@@ -1,5 +1,8 @@
 export const AUTHOR_LEN = 16;
 
+export const URL_SEARCH_POSTS =
+  "https://bsky.social/xrpc/app.bsky.feed.searchPosts";
+
 export const URL_CREATE_RECORD =
   "https://bsky.social/xrpc/com.atproto.repo.createRecord";
 

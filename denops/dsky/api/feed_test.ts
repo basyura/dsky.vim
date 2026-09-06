@@ -1,5 +1,5 @@
 import type { Denops } from "./../deps.ts";
-import { getAuthorFeed, getTimeline, like } from "./feed.ts";
+import { getAuthorFeed, getTimeline, like, searchPosts } from "./feed.ts";
 
 function assertEquals(actual: unknown, expected: unknown): void {
   const actualJson = JSON.stringify(actual);
@@ -84,6 +84,44 @@ function feedPost(handle: string, did = `did:example:${handle}`) {
     },
   };
 }
+
+Deno.test("searchPosts encodes keywords and converts post views", async () => {
+  const query = '日本語 "hello world" #tag & from:alice.test | %';
+  const responses = [
+    Response.json(sessionJson()),
+    Response.json({ posts: [feedPost("alice.test").post] }),
+  ];
+  const urls: string[] = [];
+  await withDenoStubs(() =>
+    withFetchStub((input) => {
+      urls.push(String(input));
+      return Promise.resolve(responses.shift()!);
+    }, async () => {
+      const posts = await searchPosts(createDenops(), query);
+      assertEquals(posts.map((post) => post.handle), ["alice.test"]);
+      const url = new URL(urls[1]);
+      assertEquals(url.pathname, "/xrpc/app.bsky.feed.searchPosts");
+      assertEquals([...url.searchParams], [["q", query]]);
+    })
+  );
+});
+
+Deno.test("searchPosts handles empty results and rejects invalid responses", async () => {
+  for (const body of [{ posts: [] }, { error: "BadQueryString" }]) {
+    const responses = [Response.json(sessionJson()), Response.json(body)];
+    await withDenoStubs(() =>
+      withFetchStub(() => Promise.resolve(responses.shift()!), async () => {
+        let rejected = false;
+        try {
+          assertEquals(await searchPosts(createDenops(), "test"), []);
+        } catch {
+          rejected = true;
+        }
+        assertEquals(rejected, !("posts" in body));
+      })
+    );
+  }
+});
 
 Deno.test("getTimeline filters replies to other authors and saves handles", async () => {
   const responses = [

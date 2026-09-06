@@ -10,6 +10,11 @@ export async function main(ds: Denops): Promise<void> {
   await initialize(ds);
 
   ds.dispatcher = {
+    // app.bsky.feed.searchPosts
+    async searchPosts(query: unknown): Promise<unknown> {
+      unknownutil.ensureString(query);
+      return await feed.searchPosts(ds, query);
+    },
     // com.atproto.repo.createRecord
     async createRecord(text: unknown): Promise<boolean> {
       return await repo.createRecord(ds, text);

@@ -1,4 +1,34 @@
 "
+function! dsky#search() abort
+  call inputsave()
+  try
+    let query = input('search: ')
+  catch /^Vim:Interrupt$/
+    return
+  finally
+    call inputrestore()
+    redraw
+  endtry
+  if empty(trim(query))
+    return
+  endif
+
+  call s:search(query)
+endfunction
+"
+function! s:search(query) abort
+  let posts = dsky#api#search(a:query)
+  call dsky#buffer#load(posts, a:query)
+endfunction
+"
+function! dsky#reload() abort
+  if exists('b:dsky_search_query')
+    call s:search(b:dsky_search_query)
+  else
+    call dsky#timeline()
+  endif
+endfunction
+"
 function! dsky#timeline(...) abort
   let limit = g:dsky_timeline_limit
   if a:0 != 0
@@ -72,5 +102,3 @@ function! dsky#new_session() abort
   call dsky#api#new_session()
   echo "created new session"
 endfunction
-
-
